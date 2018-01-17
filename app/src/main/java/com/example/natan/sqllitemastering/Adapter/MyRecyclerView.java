@@ -24,7 +24,11 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
 
     public interface RecyclerViewClickListener {
 
-        void onClick(View view, int position);
+        //if we want to on click the item index value
+        //void onClick(View view, int position);
+
+        //if we want the whole object to retrive the items
+        void onClick(Notes notes);
     }
 
     public MyRecyclerView(List<Notes> notes, RecyclerViewClickListener listener) {
@@ -69,7 +73,15 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
 
         @Override
         public void onClick(View v) {
-            mListener.onClick(v,getAdapterPosition());
+            // for index value on click
+            //mListener.onClick(v,getAdapterPosition());
+
+
+            // for whole object to be passed
+            int adapterPosition = getAdapterPosition();
+            Notes notesClicked = mNotes.get(adapterPosition);
+
+            mListener.onClick(notesClicked);
         }
     }
 

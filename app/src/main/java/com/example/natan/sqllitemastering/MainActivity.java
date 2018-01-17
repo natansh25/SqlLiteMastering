@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ArrayList<Notes> note = new ArrayList<>();
+        final ArrayList<Notes> note = new ArrayList<>();
 
         mRecyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mMyRecyclerView = new MyRecyclerView(note, new MyRecyclerView.RecyclerViewClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
+            public void onClick(Notes notes) {
+                Toast.makeText(MainActivity.this, notes.getNote(), Toast.LENGTH_SHORT).show();
             }
         });
         mRecyclerView.setAdapter(mMyRecyclerView);
