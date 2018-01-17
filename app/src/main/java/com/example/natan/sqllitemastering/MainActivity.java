@@ -41,7 +41,12 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mMyRecyclerView = new MyRecyclerView(note);
+        mMyRecyclerView = new MyRecyclerView(note, new MyRecyclerView.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
+            }
+        });
         mRecyclerView.setAdapter(mMyRecyclerView);
 
 

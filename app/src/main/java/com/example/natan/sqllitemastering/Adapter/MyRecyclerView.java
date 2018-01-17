@@ -19,11 +19,18 @@ import java.util.List;
 public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHolder> {
 
     List<Notes> mNotes;
+    private RecyclerViewClickListener mListener;
 
-    public MyRecyclerView(List<Notes> notes) {
-        mNotes = notes;
+
+    public interface RecyclerViewClickListener {
+
+        void onClick(View view, int position);
     }
 
+    public MyRecyclerView(List<Notes> notes, RecyclerViewClickListener listener) {
+        mNotes = notes;
+        mListener = listener;
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,7 +54,7 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
         return mNotes.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txt_Title, txt_Notes;
 
 
@@ -56,6 +63,13 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
 
             txt_Title = itemView.findViewById(R.id.txt_title);
             txt_Notes = itemView.findViewById(R.id.txt_Notes);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onClick(v,getAdapterPosition());
         }
     }
 
