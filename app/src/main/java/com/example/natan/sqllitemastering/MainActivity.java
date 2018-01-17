@@ -1,33 +1,36 @@
 package com.example.natan.sqllitemastering;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerViewAccessibilityDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.natan.sqllitemastering.Adapter.DbHelper;
 import com.example.natan.sqllitemastering.Adapter.MyRecyclerView;
+import com.example.natan.sqllitemastering.Database.NotesContract;
 import com.example.natan.sqllitemastering.pojo.Notes;
 
-import java.nio.channels.InterruptedByTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 
     RecyclerView mRecyclerView;
     MyRecyclerView mMyRecyclerView;
+
+    private SQLiteDatabase mSQLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +40,42 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ArrayList<Notes> note = new ArrayList<>();
 
+
+        DbHelper dbHelper = new DbHelper(this);
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+        Cursor cursor = getAllGuests();
+
+
         mRecyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mMyRecyclerView = new MyRecyclerView(note, new MyRecyclerView.RecyclerViewClickListener() {
+        mMyRecyclerView = new MyRecyclerView(cursor, new MyRecyclerView.RecyclerViewClickListener() {
             @Override
-            public void onClick(Notes notes) {
-                Toast.makeText(MainActivity.this, notes.getNote(), Toast.LENGTH_SHORT).show();
+            public void onClick(View view, int position) {
+                Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
         });
         mRecyclerView.setAdapter(mMyRecyclerView);
+
+        // on Swipe
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                long id = (long) viewHolder.itemView.getTag();
+
+                removeGuest(id);
+
+
+            }
+        }).attachToRecyclerView(mRecyclerView);
 
 
         Intent intent = getIntent();
@@ -61,9 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
             String title = notes.getTitle();
             String Note = notes.getNote();
-            Notes notes1 = new Notes(title, Note);
+            addNotes(title, Note);
+            mMyRecyclerView.swapCursor(getAllGuests());
+            /*Notes notes1 = new Notes(title, Note);
             note.add(notes1);
-            mMyRecyclerView.notifyDataSetChanged();
+            mMyRecyclerView.notifyDataSetChanged();*/
 
 
         }
@@ -88,6 +118,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private boolean removeGuest(long id) {
+
+        return mSQLiteDatabase.delete(NotesContract.NotesEntry.TABLE_NAME, NotesContract.NotesEntry._ID + "=" + id, null) > 0;
+
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -109,4 +146,33 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private Cursor getAllGuests() {
+        return mSQLiteDatabase.query(
+                NotesContract.NotesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                NotesContract.NotesEntry._ID
+
+
+        );
+
+
+    }
+
+
+    long addNotes(String title, String notes) {
+        ContentValues cv = new ContentValues();
+        cv.put(NotesContract.NotesEntry.COLUMN_NAME_TITLE, title);
+        cv.put(NotesContract.NotesEntry.COLUMN_NAME_NOTES, notes);
+        return mSQLiteDatabase.insert(NotesContract.NotesEntry.TABLE_NAME, null, cv);
+
+
+    }
+
+
 }
