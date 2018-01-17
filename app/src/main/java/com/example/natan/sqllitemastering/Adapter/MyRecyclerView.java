@@ -1,0 +1,63 @@
+package com.example.natan.sqllitemastering.Adapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.natan.sqllitemastering.R;
+import com.example.natan.sqllitemastering.pojo.Notes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by natan on 1/16/2018.
+ */
+
+public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHolder> {
+
+    List<Notes> mNotes;
+
+    public MyRecyclerView(List<Notes> notes) {
+        mNotes = notes;
+    }
+
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.custom_item, parent, false);
+
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+
+        Notes notes = mNotes.get(position);
+        holder.txt_Title.setText(notes.getTitle());
+        holder.txt_Notes.setText(notes.getNote());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mNotes.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView txt_Title, txt_Notes;
+
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+
+            txt_Title = itemView.findViewById(R.id.txt_title);
+            txt_Notes = itemView.findViewById(R.id.txt_Notes);
+        }
+    }
+
+
+}
