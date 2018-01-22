@@ -28,10 +28,10 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
     public interface RecyclerViewClickListener {
 
         //if we want to on click the item index value
-        void onClick(View view, int position);
+        //void onClick(View view, int position);
 
         //if we want the whole object to retrive the items
-        //void onClick(Notes notes);
+        void onClick(Notes notes);
     }
 
     public MyRecyclerView(Cursor cursor, RecyclerViewClickListener listener) {
@@ -56,6 +56,7 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
         holder.txt_Notes.setText(notes.getNote());*/
         if (!mCursor.moveToPosition(position))
             return;
+
 
         String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_NAME_TITLE));
         String note = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_NAME_NOTES));
@@ -98,7 +99,7 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
         @Override
         public void onClick(View v) {
             //for index value on click
-            mListener.onClick(v, getAdapterPosition());
+            //mListener.onClick(v, getAdapterPosition());
 
 
             // for whole object to be passed
@@ -106,6 +107,15 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
             Notes notesClicked = mNotes.get(adapterPosition);
 
             mListener.onClick(notesClicked);*/
+
+            // if using cursor
+            mCursor.moveToPosition(getAdapterPosition());
+            String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_NAME_TITLE));
+            String note = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_NAME_NOTES));
+            Notes notes = new Notes(title, note);
+            mListener.onClick(notes);
+
+
         }
     }
 

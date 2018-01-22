@@ -52,8 +52,15 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mMyRecyclerView = new MyRecyclerView(cursor, new MyRecyclerView.RecyclerViewClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
+            public void onClick(Notes notes) {
+
+                Intent i = new Intent(MainActivity.this, AddTaskActivity.class);
+                i.putExtra("title", notes.getTitle());
+                i.putExtra("note", notes.getNote());
+                startActivityForResult(i, 2);
+
+                //Toast.makeText(MainActivity.this, notes.getTitle(), Toast.LENGTH_SHORT).show();
+
             }
         });
         mRecyclerView.setAdapter(mMyRecyclerView);
@@ -81,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getParcelableExtra("Note") == null) {
 
-            Toast.makeText(this, "Null", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Null", Toast.LENGTH_SHORT).show();
         } else {
             Notes notes = intent.getParcelableExtra("Note");
-            Toast.makeText(this, notes.getTitle(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, notes.getNote(), Toast.LENGTH_SHORT).show();
+            /*Toast.makeText(this, notes.getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, notes.getNote(), Toast.LENGTH_SHORT).show();*/
 
             String title = notes.getTitle();
             String Note = notes.getNote();
@@ -123,6 +130,21 @@ public class MainActivity extends AppCompatActivity {
         return mSQLiteDatabase.delete(NotesContract.NotesEntry.TABLE_NAME, NotesContract.NotesEntry._ID + "=" + id, null) > 0;
 
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            Intent intent = getIntent();
+
+            Notes notes = intent.getParcelableExtra("Note1");
+            Toast.makeText(this, notes.getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, notes.getNote(), Toast.LENGTH_SHORT).show();
+
+
+        }
     }
 
     @Override
