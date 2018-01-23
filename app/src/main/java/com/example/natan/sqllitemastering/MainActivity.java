@@ -52,18 +52,18 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mMyRecyclerView = new MyRecyclerView(cursor, new MyRecyclerView.RecyclerViewClickListener() {
             @Override
-            public void onClick(Notes notes) {
+            public void onClick(Notes notes, int id) {
 
                 Intent i = new Intent(MainActivity.this, AddTaskActivity.class);
                 i.putExtra("title", notes.getTitle());
+                i.putExtra("id",id);
                 i.putExtra("note", notes.getNote());
-                startActivityForResult(i, 2);
 
-                //Toast.makeText(MainActivity.this, notes.getTitle(), Toast.LENGTH_SHORT).show();
+                startActivityForResult(i, 2);
 
             }
         });
-        mRecyclerView.setAdapter(mMyRecyclerView);
+                mRecyclerView.setAdapter(mMyRecyclerView);
 
         // on Swipe
 
@@ -137,11 +137,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
+
             Intent intent = getIntent();
 
             Notes notes = intent.getParcelableExtra("Note1");
-            Toast.makeText(this, notes.getTitle(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, notes.getNote(), Toast.LENGTH_SHORT).show();
+            int i=0;
+            i=intent.getExtras().getInt("id1");
+            if(i !=0)
+            {
+                Toast.makeText(this, String.valueOf(i), Toast.LENGTH_SHORT).show();
+            }
+            if(notes !=null)
+            {
+                Toast.makeText(this, notes.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+            //Toast.makeText(this, String.valueOf(intent.getExtras().getInt("id")), Toast.LENGTH_SHORT).show();
+            //Bundle extra1=getIntent().getExtras();
+          /*  if (extra1 !=null)
+            {
+                Toast.makeText(this, String.valueOf(extra1.getInt("id1")), Toast.LENGTH_SHORT).show();
+
+            }
+            extra1.*/
+            //Toast.makeText(this, String.valueOf(notes.getTitle()), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, String.valueOf(notes.getNote()), Toast.LENGTH_SHORT).show();
+
 
 
         }

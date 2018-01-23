@@ -15,6 +15,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
     EditText edt_title, edt_note;
     Bundle data;
+    int id = -1;
 
 
     @Override
@@ -25,10 +26,12 @@ public class AddTaskActivity extends AppCompatActivity {
         edt_title = findViewById(R.id.editTextTitle);
 
 
-         data = getIntent().getExtras();
+        data = getIntent().getExtras();
         if (data != null) {
             String title = data.getString("title");
             String note = data.getString("note");
+            id=data.getInt("id");
+            Toast.makeText(this, String.valueOf(id), Toast.LENGTH_SHORT).show();
         /*    Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
             Toast.makeText(this, note, Toast.LENGTH_SHORT).show();*/
             edt_title.setText(title);
@@ -46,13 +49,13 @@ public class AddTaskActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void update()
-    {
+    public void update() {
 
         Notes notes = new Notes(edt_title.getText().toString(), edt_note.getText().toString());
         Intent i = new Intent();
         i.putExtra("Note1", (Parcelable) notes);
-        setResult(2,i);
+        i.putExtra("id1",id);
+        setResult(2, i);
         finish();
 
 
@@ -76,12 +79,9 @@ public class AddTaskActivity extends AppCompatActivity {
         if (id == R.id.done) {
 
             //Toast.makeText(this, "Saved Successfully !!", Toast.LENGTH_SHORT).show();
-            if ( data != null)
-            {
+            if (data != null) {
                 update();
-            }
-            else
-            {
+            } else {
                 save();
             }
             finish();
